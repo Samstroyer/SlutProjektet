@@ -51,7 +51,7 @@ void Game()
 
         switch (nextMenu)
         {
-            case "StartWordle":
+            case "Start Wordle":
                 wg.RunRound();
                 wg = new WordleGame();
                 break;
