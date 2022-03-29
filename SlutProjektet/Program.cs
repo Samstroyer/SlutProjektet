@@ -11,7 +11,6 @@ using System.Collections.Generic;
 */
 
 Menu currentScreen;
-string currentMenu;
 Menu startScreen;
 
 WordleGame wg = new WordleGame();
@@ -37,7 +36,6 @@ void Setup()
 
 
     currentScreen = startScreen;
-    currentMenu = currentScreen.GetName();
 }
 
 void Game()
@@ -47,32 +45,16 @@ void Game()
         Raylib.BeginDrawing();
         Raylib.ClearBackground(Color.WHITE);
 
+        string nextMenu = currentScreen.Run();
 
         Raylib.EndDrawing();
-        wg.RunRound();
-        Raylib.BeginDrawing();
 
-        /*
-        switch (currentMenu)
+        switch (nextMenu)
         {
-            case "stay":
-                currentMenu = currentScreen.Run();
-                break;
-            case "StartScreen":
-                currentScreen = startScreen;
-                currentMenu = "stay";
-                break;
-            default:
-                currentScreen.Run();
-                currentMenu = "stay";
-                break;
             case "StartWordle":
-                Raylib.EndDrawing();
                 wg.RunRound();
+                wg = new WordleGame();
                 break;
         }
-        */
-
-        Raylib.EndDrawing();
     }
 }

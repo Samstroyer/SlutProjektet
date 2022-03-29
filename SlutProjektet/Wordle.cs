@@ -11,7 +11,7 @@ class WordleGame
     Rectangle exitButton = new Rectangle(10, 10, 125, 55), infoButton = new Rectangle(940, 10, 50, 50);
     private bool playing = true;
     private string currentWord = "";
-    bool win = true;
+    bool win = false;
     string correctWord;
     string[] allWords;
     List<string> usedWords = new List<string>();
@@ -199,6 +199,8 @@ class WordleGame
             if (win)
             {
                 WinScreen();
+                playing = false;
+                break;
             }
             else
             {
@@ -218,13 +220,14 @@ class WordleGame
         Raylib.EndDrawing();
 
         Raylib.BeginDrawing();
-        Raylib.ClearBackground(Color.GREEN);
-        Raylib.DrawText("You have won!", 200, 200, 100, Color.BLACK);
-        Raylib.DrawText($"correct word: {correctWord}", 150, 400, 100, Color.BLACK);
-        System.Threading.Thread.Sleep(1500);
+        Raylib.ClearBackground(Color.ORANGE);
+        Raylib.DrawText("You have won!", 150, 200, 100, Color.RED);
+        Raylib.DrawText($"correct word:\n{correctWord}", 150, 400, 100, Color.BLUE);
         Raylib.EndDrawing();
+        System.Threading.Thread.Sleep(2000);
 
         Raylib.BeginDrawing();
+        Raylib.ClearBackground(Color.ORANGE);
     }
 
     private void Buttons()
