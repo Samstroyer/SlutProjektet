@@ -14,6 +14,8 @@ Menu currentScreen;
 string currentMenu;
 Menu startScreen;
 
+WordleGame wg = new WordleGame();
+
 Setup();
 Game();
 
@@ -25,11 +27,15 @@ void Setup()
     startScreen = new Menu("StartScreen")
     {
         menuButtons = new List<(Rectangle shape, string prompt)> {
-            (new Rectangle(300, 125, 400, 150), "Start Game"),
-            (new Rectangle(300, 325, 400, 150), "Settings"),
-            (new Rectangle(300, 525, 400, 150), "Quit")
+            (new Rectangle(225, 100, 550, 150), "Start Wordle"),
+            (new Rectangle(225, 275, 550, 150), "Start TextOrDie"),
+            (new Rectangle(225, 450, 550, 150), "Settings"),
+            (new Rectangle(225, 625, 550, 150), "Quit")
         }
     };
+
+
+
     currentScreen = startScreen;
     currentMenu = currentScreen.GetName();
 }
@@ -41,13 +47,31 @@ void Game()
         Raylib.BeginDrawing();
         Raylib.ClearBackground(Color.WHITE);
 
+
+        Raylib.EndDrawing();
+        wg.RunRound();
+        Raylib.BeginDrawing();
+
+        /*
         switch (currentMenu)
         {
             case "stay":
+                currentMenu = currentScreen.Run();
+                break;
+            case "StartScreen":
+                currentScreen = startScreen;
+                currentMenu = "stay";
+                break;
+            default:
                 currentScreen.Run();
+                currentMenu = "stay";
+                break;
+            case "StartWordle":
+                Raylib.EndDrawing();
+                wg.RunRound();
                 break;
         }
-
+        */
 
         Raylib.EndDrawing();
     }
