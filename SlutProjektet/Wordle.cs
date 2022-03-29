@@ -1,24 +1,24 @@
 using System;
 using System.IO;
 using Raylib_cs;
+using System.Threading;
 using System.Collections.Generic;
 
 class WordleGame
 {
     //Lista är enklare och har en .Contains(), det gör så att jag enkelt senare kan se om man skrivit en bokstav eller inte.
     List<string> lowercaseABC = new List<string> { "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", };
-    Rectangle exitButton = new Rectangle(10, 10, 100, 100);
+    Rectangle exitButton = new Rectangle(10, 10, 125, 55), infoButton = new Rectangle(940, 10, 50, 50);
     private bool playing = true;
     private string currentWord = "";
-    bool win = false;
+    bool win = true;
     string correctWord;
     string[] allWords;
     List<string> usedWords = new List<string>();
 
     int row = 0;
 
-    (Box rec, Color col, char ch)[,] wordSquares = new (Box rec, Color col, char ch)[5, 6];
-    private char[] selectedWordCharArr = new char[5];
+    (Color col, char ch)[,] wordSquares = new (Color col, char ch)[6, 5];
 
     public WordleGame()
     {
@@ -26,24 +26,47 @@ class WordleGame
             Man kan välja ASync för att ladda in den samtidigt som den arbetar med annat.
             Som tur är så är det inte en 10k+ lista så det händer relativt snabbt.
 
-            Inte så att det är så mycket men listan kanske inte borde laddas in på RAM heller
-            från mätningar tar listan mellan 30-60MB, vilket är manageable.
+            Inte så att listan är EXTREEEMT lång men den borde kanske inte laddas in på RAM
+            
+            - från mätningar tar listan mellan 30-60MB, vilket är manageable.
+            - från mätningar tar det under sekunden att ladda in den.
+
+            (Mätningar på skoldatorn!)
         */
         allWords = File.ReadAllLines(@"WordleWords.txt");
 
-        for (int j = 0; j < 6; j++)
+        for (int i = 0; i < 6; i++)
         {
-            for (int i = 0; i < 5; i++)
+            for (int j = 0; j < 5; j++)
             {
-                wordSquares[i, j] = (new Box(i + (5 * j)), Color.WHITE, '\0');
+                wordSquares[i, j] = (Color.WHITE, '\0');
             }
         }
+
+        //Välj ett random ord som är rätt
+        Random ran = new Random();
+
+        int tempIndex = ran.Next(allWords.Length);
+        correctWord = allWords[tempIndex];
     }
 
     private void KeyboardInput()
     {
         int b = Raylib.GetKeyPressed();
         char a = (char)b;
+
+        /*
+        Keycode regler
+
+        BACKSPACE : 259
+        ENTER : 257
+        A-Z : lowercaseABC.contains()
+
+        Ingen input : '\0'
+
+        Jag har separata If statements så att jag 
+        kan enklare säga vad problemet är exakt.
+        */
 
         if (!(a == '\0') && row < 6)
         {
@@ -133,20 +156,29 @@ class WordleGame
             }
             else if (b == 259)
             {
-                currentWord.Remove(currentWord.Length - 1);
+                if (currentWord.Length > 0)
+                {
+                    wordSquares[row, currentWord.Length - 1].ch = '\0';
+                    currentWord = currentWord.Remove(currentWord.Length - 1);
+                }
+                else
+                {
+                    Console.WriteLine("Nothing to remove!");
+                }
             }
             else
             {
                 if (lowercaseABC.Contains(a.ToString().ToLower()))
                 {
+                    Console.WriteLine(currentWord.Length);
                     if (currentWord.Length >= 5)
                     {
                         Console.WriteLine($"Word is too long, you have {currentWord.Length}/5 characters!");
                     }
                     else
                     {
-                        correctWord += a.ToString();
-                        wordSquares[row, correctWord.Length].ch = a;
+                        currentWord += a.ToString();
+                        wordSquares[row, currentWord.Length - 1].ch = a;
                     }
                 }
                 else
@@ -154,15 +186,6 @@ class WordleGame
                     Console.WriteLine($"{a.ToString()} is not a valid character in the game!");
                 }
             }
-            /*
-            Extra Keycodes (nummer och inte char!)
-            BACKSPACE : 259
-            ENTER : 257
-            */
-
-
-
-
         }
     }
 
@@ -173,57 +196,89 @@ class WordleGame
             Raylib.BeginDrawing();
             Raylib.ClearBackground(Color.WHITE);
 
-            Display();
-            Buttons();
-            KeyboardInput();
+            if (win)
+            {
+                WinScreen();
+            }
+            else
+            {
+                Display();
+                Buttons();
+                KeyboardInput();
+            }
 
             Raylib.EndDrawing();
         }
     }
 
+    private void WinScreen()
+    {
+        //Sadly måste vi avsluta Drawing (EndDrawing()) och sen starta den igen i slutet av funktionen... :/
+        System.Threading.Thread.Sleep(500);
+        Raylib.EndDrawing();
+
+        Raylib.BeginDrawing();
+        Raylib.ClearBackground(Color.GREEN);
+        Raylib.DrawText("You have won!", 200, 200, 100, Color.BLACK);
+        Raylib.DrawText($"correct word: {correctWord}", 150, 400, 100, Color.BLACK);
+        System.Threading.Thread.Sleep(1500);
+        Raylib.EndDrawing();
+
+        Raylib.BeginDrawing();
+    }
+
     private void Buttons()
     {
-        Raylib.DrawRectangleRec(exitButton, Color.RED);
-        Raylib.DrawText("Exit", 15, 10, 60, Color.GREEN);
+        var mouseCords = Raylib.GetMousePosition();
+
+        Raylib.DrawRectangleRec(exitButton, Color.GRAY);
+        Raylib.DrawRectangleLinesEx(exitButton, 2, Color.LIGHTGRAY);
+        Raylib.DrawText("Exit", 15, 10, 60, Color.BLACK);
+
+        Raylib.DrawRectangleRec(infoButton, Color.DARKGREEN);
+        Raylib.DrawRectangleLinesEx(infoButton, 2, Color.LIGHTGRAY);
+        Raylib.DrawText("?", 948, 8, 60, Color.BLACK);
+
+        //Det finns exit knappen och info knappen
+        //Jag delar upp dem i 'v' och 'h' - vertical och horizontal
+        bool exitH = mouseCords.X > exitButton.x && mouseCords.X < exitButton.width + exitButton.x;
+        bool exitV = mouseCords.Y > exitButton.y && mouseCords.Y < exitButton.y + exitButton.height;
+        if (exitH && exitV)
+        {
+            Raylib.DrawRectangleRec(exitButton, Color.BLACK);
+            Raylib.DrawText("Exit", 15, 10, 60, Color.WHITE);
+
+            if (Raylib.IsMouseButtonPressed(MouseButton.MOUSE_LEFT_BUTTON))
+            {
+                playing = false;
+            }
+        }
+
+        bool infoH = mouseCords.X > infoButton.x && mouseCords.X < infoButton.width + infoButton.x;
+        bool infoV = mouseCords.Y > infoButton.y && mouseCords.Y < infoButton.y + infoButton.height;
+        if (infoH && infoV)
+        {
+            string instructions = "Your goal is to\nguess a random word.\n\nThe word is random\nand english.";
+            (int x, int y) blockPos = ((int)mouseCords.X - 500, (int)mouseCords.Y);
+            Raylib.DrawRectangle(blockPos.x, blockPos.y, 500, 300, Color.GRAY);
+            Raylib.DrawText(instructions, blockPos.x + 10, blockPos.y + 10, 40, Color.BLACK);
+        }
     }
 
     private void Display()
     {
         int xOffset = 250, yOffset = 25;
 
-        for (int j = 0; j < 6; j++)
+        for (int i = 0; i < 6; i++)
         {
-            for (int i = 0; i < 5; i++)
+            for (int j = 0; j < 5; j++)
             {
-                int tX = xOffset + (100 * i), tY = yOffset + (100 * j);
+                int tX = xOffset + (100 * j), tY = yOffset + (100 * i);
 
                 Raylib.DrawRectangle(tX + 2, tY + 2, 96, 96, wordSquares[i, j].col);
                 Raylib.DrawRectangleLines(tX + 2, tY + 2, 96, 96, Color.GRAY);
                 Raylib.DrawText(wordSquares[i, j].ch.ToString(), tX, tY, 60, Color.BLACK);
             }
         }
-
-        for (int i = 0; i < 5; i++)
-        {
-            int tX = xOffset + (100 * i);
-
-            Raylib.DrawRectangle(tX, 675, 100, 100, Color.GREEN);
-            Raylib.DrawRectangleLines(tX, 675, 100, 100, Color.RED);
-        }
-    }
-}
-
-class Box
-{
-    int number;
-
-    public Box(int recievedNumber)
-    {
-        number = recievedNumber;
-    }
-
-    public (int width, int height) Dimensions()
-    {
-        return (30, 30);
     }
 }

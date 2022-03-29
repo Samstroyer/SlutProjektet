@@ -1,0 +1,6 @@
+Jag behöver göra så att när man vinner finns det en effekt, condusing 100 att jag faktiskt vann....
+
+Jag vill göra så att man kan se vilka tangenter man har använt
+
+centrera bokstäver!
+outline på tips rutan
