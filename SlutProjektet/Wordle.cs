@@ -97,6 +97,7 @@ class WordleGame
                     }
                     else
                     {
+                        usedWords.Add(currentWord);
                         bool match = false;
                         foreach (string existingWord in allWords)
                         {
@@ -145,7 +146,7 @@ class WordleGame
                         }
                         else
                         {
-                            Console.WriteLine("Word does not match existing word!");
+                            Console.WriteLine("Can't validate existance of word!");
                         }
                     }
                 }
