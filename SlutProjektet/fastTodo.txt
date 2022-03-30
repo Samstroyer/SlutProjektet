@@ -1,4 +1,4 @@
-[IDEAS]
+[IDEAS] TextOrDie Spelet
 
 [WIP] Foreach loop på en char[] för att visa använda tangenter - om den matchar i alphabetet med contains så etc etc
 [WIP] Jag vill göra så att man kan se vilka tangenter man har använt
@@ -6,3 +6,10 @@
 [SOLVED] outline på tips rutan
 [SOLVED] fixa att man kan förlora 
 [SOLVED] centrera bokstäver!
+
+[ERROR] Får att alla bokstäver i ett ord passar / inte passar av en enda bokstav
+
+
+Notes:
+borde göra en (string, bool) för alpfabetet!
+gör det enklare att visa sen i alfabetet om man har eller inte skrivit rätt

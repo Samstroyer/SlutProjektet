@@ -1,13 +1,13 @@
 using System;
 using System.IO;
 using Raylib_cs;
-using System.Threading;
+using System.Linq;
 using System.Collections.Generic;
 
 class WordleGame
 {
     //Lista är enklare och har en .Contains(), det gör så att jag enkelt senare kan se om man skrivit en bokstav eller inte.
-    List<string> lowercaseABC = new List<string> { "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z", };
+    List<string> lowercaseABC = new List<string> { "a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z" };
     Rectangle exitButton = new Rectangle(10, 10, 125, 55), infoButton = new Rectangle(940, 10, 50, 50);
     private bool playing = true;
     private string currentWord = "";
@@ -97,7 +97,6 @@ class WordleGame
                     }
                     else
                     {
-                        usedWords.Add(currentWord);
                         bool match = false;
                         foreach (string existingWord in allWords)
                         {
@@ -110,6 +109,7 @@ class WordleGame
 
                         if (match)
                         {
+                            usedWords.Add(currentWord);
                             (Color col, char ch)[] matchPattern = new (Color, char)[5];
 
                             Color fail = Color.DARKGRAY;
@@ -307,6 +307,13 @@ class WordleGame
         foreach (string s in lowercaseABC)
         {
             Rectangle tempBox = new Rectangle(x, y, 25, 25);
+
+
+            Raylib.DrawRectangleRec(tempBox, Color.GREEN);
+
+            Raylib.DrawRectangleRec(tempBox, Color.YELLOW);
+
+
             Raylib.DrawRectangleLinesEx(tempBox, 2, Color.BLACK);
             Raylib.DrawText(s.ToUpper(), (int)tempBox.x + 5, (int)tempBox.y + 2, 25, Color.BLACK);
 
