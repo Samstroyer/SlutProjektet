@@ -22,7 +22,7 @@ class Menu
     public string Run()
     {
         string option = "stay";
-        
+
         foreach ((Rectangle, string) b in menuButtons)
         {
             Display(b);
@@ -33,7 +33,6 @@ class Menu
             }
         }
 
-        System.Console.WriteLine(option);
         return option;
     }
 

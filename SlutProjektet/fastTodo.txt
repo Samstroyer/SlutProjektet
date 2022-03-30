@@ -1,7 +1,8 @@
-Jag behöver göra så att när man vinner finns det en effekt, condusing 100 att jag faktiskt vann....
+[IDEAS]
 
-Jag vill göra så att man kan se vilka tangenter man har använt
+[WIP] Foreach loop på en char[] för att visa använda tangenter - om den matchar i alphabetet med contains så etc etc
+[WIP] Jag vill göra så att man kan se vilka tangenter man har använt
 
-centrera bokstäver!
-outline på tips rutan
-fixa att man kan förlora
+[SOLVED] outline på tips rutan
+[SOLVED] fixa att man kan förlora 
+[SOLVED] centrera bokstäver!

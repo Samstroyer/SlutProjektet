@@ -11,7 +11,7 @@ class WordleGame
     Rectangle exitButton = new Rectangle(10, 10, 125, 55), infoButton = new Rectangle(940, 10, 50, 50);
     private bool playing = true;
     private string currentWord = "";
-    bool win = false;
+    bool win = false, lose = false;
     string correctWord;
     string[] allWords;
     List<string> usedWords = new List<string>();
@@ -188,6 +188,10 @@ class WordleGame
                 }
             }
         }
+        else if (row >= 6)
+        {
+            lose = true;
+        }
     }
 
     public void RunRound()
@@ -197,9 +201,9 @@ class WordleGame
             Raylib.BeginDrawing();
             Raylib.ClearBackground(Color.WHITE);
 
-            if (win)
+            if (win || lose)
             {
-                WinScreen();
+                EndScreen();
                 playing = false;
                 break;
             }
@@ -214,17 +218,29 @@ class WordleGame
         }
     }
 
-    private void WinScreen()
+    private void EndScreen()
     {
         //Sadly måste vi avsluta Drawing (EndDrawing()) och sen starta den igen i slutet av funktionen... :/
         System.Threading.Thread.Sleep(500);
         Raylib.EndDrawing();
 
+
         Raylib.BeginDrawing();
         Raylib.ClearBackground(Color.ORANGE);
-        Raylib.DrawText("You have won!", 150, 200, 100, Color.RED);
-        Raylib.DrawText($"correct word:\n{correctWord}", 150, 400, 100, Color.BLUE);
-        Raylib.EndDrawing();
+
+        if (win)
+        {
+            Raylib.DrawText("You have won!", 150, 200, 100, Color.RED);
+            Raylib.DrawText($"correct word:\n{correctWord}", 150, 400, 100, Color.BLUE);
+            Raylib.EndDrawing();
+        }
+        else if (lose)
+        {
+            Raylib.DrawText("You have lost!", 150, 200, 100, Color.RED);
+            Raylib.DrawText($"correct word:\n{correctWord}", 150, 400, 100, Color.BLUE);
+            Raylib.EndDrawing();
+        }
+
         System.Threading.Thread.Sleep(2000);
 
         Raylib.BeginDrawing();
@@ -262,9 +278,10 @@ class WordleGame
         bool infoV = mouseCords.Y > infoButton.y && mouseCords.Y < infoButton.y + infoButton.height;
         if (infoH && infoV)
         {
-            string instructions = "Your goal is to\nguess a random word.\n\nThe word is random\nand english.";
+            string instructions = "Your goal is to\nguess a random word.\n\nThe word is random\nand probably english.";
             (int x, int y) blockPos = ((int)mouseCords.X - 500, (int)mouseCords.Y);
             Raylib.DrawRectangle(blockPos.x, blockPos.y, 500, 300, Color.GRAY);
+            Raylib.DrawRectangleLines(blockPos.x, blockPos.y, 500, 300, Color.BLACK);
             Raylib.DrawText(instructions, blockPos.x + 10, blockPos.y + 10, 40, Color.BLACK);
         }
     }
@@ -281,7 +298,24 @@ class WordleGame
 
                 Raylib.DrawRectangle(tX + 2, tY + 2, 96, 96, wordSquares[i, j].col);
                 Raylib.DrawRectangleLines(tX + 2, tY + 2, 96, 96, Color.GRAY);
-                Raylib.DrawText(wordSquares[i, j].ch.ToString(), tX, tY, 60, Color.BLACK);
+                Raylib.DrawText(wordSquares[i, j].ch.ToString(), tX + 30, tY + 25, 60, Color.BLACK);
+            }
+        }
+
+
+        int x = 360, y = 650;
+        foreach (string s in lowercaseABC)
+        {
+            Rectangle tempBox = new Rectangle(x, y, 25, 25);
+            Raylib.DrawRectangleLinesEx(tempBox, 2, Color.BLACK);
+            Raylib.DrawText(s.ToUpper(), (int)tempBox.x + 5, (int)tempBox.y + 2, 25, Color.BLACK);
+
+            x += 30;
+
+            if (x > 600)
+            {
+                y += 50;
+                x = 360;
             }
         }
     }
