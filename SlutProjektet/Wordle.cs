@@ -304,14 +304,47 @@ class WordleGame
 
 
         int x = 360, y = 650;
+
         foreach (string s in lowercaseABC)
         {
             Rectangle tempBox = new Rectangle(x, y, 25, 25);
 
+            //lista på vilka tangenter som ska ha vilken färg
+            List<string> grayCharacters = new List<string>();
+            List<string> yellowCharacters = new List<string>();
+            List<string> greenCharacters = new List<string>();
 
-            Raylib.DrawRectangleRec(tempBox, Color.GREEN);
+            foreach (string uw in usedWords)
+            {
+                for (int i = 0; i < 5; i++)
+                {
+                    if (uw.ToCharArray()[i] == correctWord.ToCharArray()[i])
+                    {
+                        greenCharacters.Add(uw.ToCharArray()[i].ToString().ToLower());
+                    }
+                    else if (correctWord.Contains(uw.ToCharArray()[i]))
+                    {
+                        yellowCharacters.Add(uw.ToCharArray()[i].ToString().ToLower());
+                    }
+                    else if (!correctWord.Contains(uw.ToCharArray()[i]))
+                    {
+                        grayCharacters.Add(uw.ToCharArray()[i].ToString().ToLower());
+                    }
+                }
+            }
 
-            Raylib.DrawRectangleRec(tempBox, Color.YELLOW);
+            if (greenCharacters.Contains(s.ToLower()))
+            {
+                Raylib.DrawRectangleRec(tempBox, Color.GREEN);
+            }
+            else if (yellowCharacters.Contains(s.ToLower()))
+            {
+                Raylib.DrawRectangleRec(tempBox, Color.YELLOW);
+            }
+            else if (grayCharacters.Contains(s.ToLower()))
+            {
+                Raylib.DrawRectangleRec(tempBox, Color.LIGHTGRAY);
+            }
 
 
             Raylib.DrawRectangleLinesEx(tempBox, 2, Color.BLACK);

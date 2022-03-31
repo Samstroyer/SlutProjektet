@@ -1,4 +1,5 @@
 [IDEAS] TextOrDie Spelet
+[IDEAS] Arbeta på finare grön - gul och grå bakgrundscheck
 
 [WIP] Foreach loop på en char[] för att visa använda tangenter - om den matchar i alphabetet med contains så etc etc
 [WIP] Jag vill göra så att man kan se vilka tangenter man har använt
