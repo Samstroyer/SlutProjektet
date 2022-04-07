@@ -1,15 +1,14 @@
 [IDEAS] TextOrDie Spelet
-[IDEAS] Arbeta på finare grön - gul och grå bakgrundscheck
+[IDEAS] Arbeta på finare grön - gul och grå bakgrundscheck (i koden)
 
-[WIP] Foreach loop på en char[] för att visa använda tangenter - om den matchar i alphabetet med contains så etc etc
-[WIP] Jag vill göra så att man kan se vilka tangenter man har använt
-
+[SOLVED] Jag vill göra så att man kan se vilka tangenter man har använt
 [SOLVED] outline på tips rutan
 [SOLVED] fixa att man kan förlora 
 [SOLVED] centrera bokstäver!
 
-[ERROR] Får att alla bokstäver i ett ord passar / inte passar av en enda bokstav
+[SCRAPED / REMADE] Foreach loop på en char[] för att visa använda tangenter - om den matchar i alphabetet med contains så etc etc
 
+[ERROR] Får att alla bokstäver i ett ord passar / inte passar av en enda bokstav
 
 Notes:
 borde göra en (string, bool) för alpfabetet!

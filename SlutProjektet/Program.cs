@@ -10,11 +10,15 @@ using System.Collections.Generic;
     This was created for my assignment : "Slutprojektet".
 */
 
+//Jag skapar alla olika skärmar och sen kan jag säga currentScreen är en av de redan skapade.
 Menu currentScreen;
 Menu startScreen;
 
+//WordleGame och ToD är olika filer för att inte clutter'a program.cs
 WordleGame wg = new WordleGame();
+//TextorDie ToD = new TextorDie();
 
+//Setup och main loopen.
 Setup();
 Game();
 
@@ -23,6 +27,9 @@ void Setup()
     Raylib.InitWindow(1000, 800, "S-GameLauncher");
     Raylib.SetTargetFPS(60);
 
+    //Jag fick lära mig av Simon eller så var det Theo Z att man kan göra såhär.
+    //Jag trodde inte man kunde lägga måsvingar för att sätta variablar i klassen. 
+    //(jag trodde endast startScreen.menuButtons.add etc etc)
     startScreen = new Menu("StartScreen")
     {
         menuButtons = new List<(Rectangle shape, string prompt)> {
@@ -33,26 +40,32 @@ void Setup()
         }
     };
 
-
-
+    //Vi startar på startScreen så det är currentScreen
     currentScreen = startScreen;
 }
 
 void Game()
 {
+    //Main Loopen
     while (!Raylib.WindowShouldClose())
     {
         Raylib.BeginDrawing();
         Raylib.ClearBackground(Color.WHITE);
 
+        //Sebastian (Lärare i WEBWEU) har varit väldigt inspirerande och hård med minne man tar upp
+        //Det har gjort så att jag inte vill ha en string (för det tar mycket minne) och istället något annat
+        //Det är något jag skulle vilja fixa i framtiden (kanske till short eller byte)
         string nextMenu = currentScreen.Run();
 
         Raylib.EndDrawing();
 
+        //Switchen kollar om jag ska byta meny eller inte och startar den menyn isåfall.
         switch (nextMenu)
         {
             case "Start Wordle":
+                //Jag startar rundan (vilket stoppar den från att gå vidare)
                 wg.RunRound();
+                //Efteråt gör jag det till ett nytt WordleGame, det ger "nästa runda" ett nytt ord etc.
                 wg = new WordleGame();
                 break;
         }
