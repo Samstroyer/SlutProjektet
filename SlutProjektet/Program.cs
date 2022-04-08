@@ -16,7 +16,7 @@ Menu startScreen;
 
 //WordleGame och ToD är olika filer för att inte clutter'a program.cs
 WordleGame wg = new WordleGame();
-//TextorDie ToD = new TextorDie();
+TextOrDie ToD = new TextOrDie();
 
 //Setup och main loopen.
 Setup();
