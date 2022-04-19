@@ -59,6 +59,12 @@ void Game()
 
         Raylib.EndDrawing();
 
+
+
+        nextMenu = "Start TextOrDie";
+
+
+
         //Switchen kollar om jag ska byta meny eller inte och startar den menyn isåfall.
         switch (nextMenu)
         {
@@ -67,6 +73,12 @@ void Game()
                 wg.RunRound();
                 //Efteråt gör jag det till ett nytt WordleGame, det ger "nästa runda" ett nytt ord etc.
                 wg = new WordleGame();
+                break;
+            case "Start TextOrDie":
+                //Jag startar rundan (vilket stoppar den från att gå vidare)
+                ToD.RunRound();
+                //Efteråt gör jag det till ett nytt WordleGame, det ger "nästa runda" ett nytt ord etc.
+                ToD = new TextOrDie();
                 break;
         }
     }

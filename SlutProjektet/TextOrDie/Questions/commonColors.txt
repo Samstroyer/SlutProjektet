@@ -1,3 +1,4 @@
+Name a common color
 WHITE
 YELLOW
 BLUE
