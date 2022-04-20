@@ -15,6 +15,10 @@ class TextOrDie
     Vector3 camPos = new Vector3(0, 10, 10), camTarget = new Vector3(0, 0, 0);
     Camera3D cam;
 
+    //Array för hastighet då alfabetet är statiskt
+    char[] alphabet = new char[] { 'A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I', 'J', 'K', 'L', 'M', 'N', 'O', 'P', 'Q', 'R', 'S', 'T', 'U', 'V', 'W', 'X', 'Y', 'Z' };
+    string currentTyping = "";
+
     //Lista är snabbare och vi kommer max ha 4 enemies (5 personer totalt)
     (string name, int elevation, List<char> letterTower)[] participants = new (string, int, List<char>)[5];
 
@@ -75,30 +79,38 @@ class TextOrDie
 
         while (playing && !Raylib.WindowShouldClose())
         {
-            Raylib.BeginDrawing();
-            Raylib.BeginMode3D(cam);
-            Raylib.ClearBackground(Color.WHITE);
 
             switch (gameState)
             {
                 case states.playing:
                     {
+                        Raylib.BeginDrawing();
+                        Raylib.ClearBackground(Color.WHITE);
+
+                        Raylib.BeginMode3D(cam);
+                        Render3D();
+                        Raylib.EndMode3D();
+
                         InputDetection();
                         Logic();
-                        Render();
+
+                        Render2D();
+                        Raylib.EndDrawing();
                     }
                     break;
             }
-
-
-
-            Raylib.EndMode3D();
-            Raylib.EndDrawing();
-
         }
     }
 
-    private void Render()
+    private void Render2D()
+    {
+        int fontSize = 20;
+        int pos = Raylib.GetScreenWidth() / 2;
+        int posOffset = Raylib.MeasureText(currentTyping, fontSize) / 2;
+        Raylib.DrawText(currentTyping, pos - posOffset, 400, fontSize, Color.GOLD);
+    }
+
+    private void Render3D()
     {
         participants[0].letterTower = new List<char> { 'H', 'Y', 'a' };
 
@@ -130,18 +142,29 @@ class TextOrDie
 
     private void InputDetection()
     {
-        //Se till så att inte man lägger på faktiskt på [2] (you) utan att man lägger i en temp som sedan läggs på [2] "you"
-        //Kan annars göra så att man vinner direkt...
         int inputNum = Raylib.GetKeyPressed();
         char inputChar = (char)inputNum;
 
-        System.Console.WriteLine(participants[2].elevation);
-        if (inputChar == 'A')
+        // BACKSPACE : 259
+        // ENTER : 257
+
+        if (alphabet.Contains(inputChar))
         {
-            participants[2].elevation++;
-            participants[2].letterTower.Add((char)gen.Next(35, 120));
+            currentTyping += inputChar;
+            Console.WriteLine("yepp");
+        }
+        else if (inputNum == 259 && currentTyping.Length > 0)
+        {
+            currentTyping = currentTyping.Remove(currentTyping.Length - 1);
+        }
+        else if (inputNum == 257)
+        {
+            participants[2].letterTower.AddRange(currentTyping);
+            participants[2].elevation = participants[2].letterTower.Count + 1;
+            //Add check etc
         }
 
-        System.Console.WriteLine(participants[2].elevation);
+        // participants[2].elevation++;
+        // participants[2].letterTower.Add((char)gen.Next(35, 120));
     }
 }
