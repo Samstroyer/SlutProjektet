@@ -24,6 +24,7 @@ class TextOrDie
 
     //Frågor och prompts till frågorna i en lista (vill kunna ta bort frågan om den används) 
     List<(string prompt, string[] answers)> questions = new List<(string prompt, string[] answers)>();
+    int currQuestionNum;
 
     //Tipsad av Sebastian (WebWeu) att göra en enum för states
     public enum states
@@ -71,6 +72,8 @@ class TextOrDie
             //Få in det i questions listan
             questions.Add((q, answers));
         }
+
+        currQuestionNum = gen.Next(questions.Count());
     }
 
     public void RunRound()
@@ -105,9 +108,18 @@ class TextOrDie
     private void Render2D()
     {
         int fontSize = 20;
-        int pos = Raylib.GetScreenWidth() / 2;
-        int posOffset = Raylib.MeasureText(currentTyping, fontSize) / 2;
-        Raylib.DrawText(currentTyping, pos - posOffset, 400, fontSize, Color.GOLD);
+        int halfWidth = Raylib.GetScreenWidth() / 2;
+        int yStart = 600;
+
+        int writeBoxOffset = Raylib.MeasureText(currentTyping, fontSize) / 2;
+        Raylib.DrawRectangle(halfWidth - writeBoxOffset - 5, yStart - 5, writeBoxOffset * 2 + 10, 28, Color.DARKPURPLE);
+        Raylib.DrawRectangleLines(halfWidth - writeBoxOffset - 5, yStart - 5, writeBoxOffset * 2 + 10, 28, Color.GRAY);
+        Raylib.DrawText(currentTyping, halfWidth - writeBoxOffset, yStart, fontSize, Color.PURPLE);
+
+        int questionBoxOffset = Raylib.MeasureText(questions[currQuestionNum].prompt, 20) / 2;
+        Raylib.DrawRectangle(halfWidth - questionBoxOffset - 5, 100, questionBoxOffset * 2 + 10, 28, Color.PURPLE);
+        Raylib.DrawRectangleLines(halfWidth - questionBoxOffset - 5, 100, questionBoxOffset * 2 + 10, 28, Color.BLACK);
+        Raylib.DrawText(questions[currQuestionNum].prompt, halfWidth - questionBoxOffset, 100, 20, Color.WHITE);
     }
 
     private void Render3D()
@@ -135,7 +147,7 @@ class TextOrDie
     private void Logic()
     {
         camTarget = new Vector3(0, participants[2].elevation * 2.5f, 0);
-        camPos = new Vector3(0, (participants[2].elevation * 2.5f) + 8, 40);
+        camPos = new Vector3(0, (participants[2].elevation * 2.5f) + 6, 35);
         cam.position = camPos;
         cam.target = camTarget;
     }
@@ -162,6 +174,9 @@ class TextOrDie
             participants[2].letterTower.AddRange(currentTyping);
             participants[2].elevation = participants[2].letterTower.Count + 1;
             //Add check etc
+
+            questions.RemoveAt(currQuestionNum);
+            currQuestionNum = gen.Next(questions.Count());
         }
 
         // participants[2].elevation++;
