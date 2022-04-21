@@ -30,6 +30,7 @@ class TextOrDie
     public enum states
     {
         playing,
+        draw,
         lose,
         win
     }
@@ -169,17 +170,35 @@ class TextOrDie
         {
             currentTyping = currentTyping.Remove(currentTyping.Length - 1);
         }
-        else if (inputNum == 257)
+        else if (inputNum == 257 && currentTyping.Length > 0)
         {
-            participants[2].letterTower.AddRange(currentTyping);
-            participants[2].elevation = participants[2].letterTower.Count + 1;
-            //Add check etc
+            if (questions[currQuestionNum].answers.Contains(currentTyping))
+            {
+                participants[2].letterTower.AddRange(currentTyping);
+                participants[2].elevation = participants[2].letterTower.Count + 1;
+
+            }
+
+            for (int i = 0; i < participants.Count(); i++)
+            {
+                if (i != 2)
+                {
+                    int answerID = gen.Next(questions[currQuestionNum].answers.Count());
+                    string randomPickedAnswer = questions[currQuestionNum].answers[answerID];
+                    participants[i].letterTower.AddRange(randomPickedAnswer);
+                    participants[i].elevation += randomPickedAnswer.Length;
+                }
+            }
 
             questions.RemoveAt(currQuestionNum);
-            currQuestionNum = gen.Next(questions.Count());
+            if (questions.Count > 0)
+            {
+                currQuestionNum = gen.Next(questions.Count());
+            }
+            else
+            {
+                gameState = states.draw;
+            }
         }
-
-        // participants[2].elevation++;
-        // participants[2].letterTower.Add((char)gen.Next(35, 120));
     }
 }
