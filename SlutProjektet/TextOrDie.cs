@@ -7,6 +7,7 @@ using System.Collections.Generic;
 
 class TextOrDie
 {
+    Texture2D background;
     states gameState = states.playing;
     bool playing = true;
     Random gen = new Random();
@@ -75,6 +76,8 @@ class TextOrDie
         }
 
         currQuestionNum = gen.Next(questions.Count());
+
+        background = Raylib.LoadTexture(@"TextOrDie\Other\background.png");
     }
 
     public void RunRound()
@@ -117,10 +120,18 @@ class TextOrDie
         Raylib.DrawRectangleLines(halfWidth - writeBoxOffset - 5, yStart - 5, writeBoxOffset * 2 + 10, 28, Color.GRAY);
         Raylib.DrawText(currentTyping, halfWidth - writeBoxOffset, yStart, fontSize, Color.PURPLE);
 
-        int questionBoxOffset = Raylib.MeasureText(questions[currQuestionNum].prompt, 20) / 2;
-        Raylib.DrawRectangle(halfWidth - questionBoxOffset - 5, 100, questionBoxOffset * 2 + 10, 28, Color.PURPLE);
-        Raylib.DrawRectangleLines(halfWidth - questionBoxOffset - 5, 100, questionBoxOffset * 2 + 10, 28, Color.BLACK);
-        Raylib.DrawText(questions[currQuestionNum].prompt, halfWidth - questionBoxOffset, 100, 20, Color.WHITE);
+        try
+        {
+            int questionBoxOffset = Raylib.MeasureText(questions[currQuestionNum].prompt, 20) / 2;
+            Raylib.DrawRectangle(halfWidth - questionBoxOffset - 5, 100, questionBoxOffset * 2 + 10, 28, Color.PURPLE);
+            Raylib.DrawRectangleLines(halfWidth - questionBoxOffset - 5, 100, questionBoxOffset * 2 + 10, 28, Color.BLACK);
+            Raylib.DrawText(questions[currQuestionNum].prompt, halfWidth - questionBoxOffset, 100, 20, Color.WHITE);
+        }
+        catch
+        {
+            //Betyder att spelet är över om man inte kan komma åt nästa fråga
+
+        }
     }
 
     private void Render3D()
@@ -143,6 +154,8 @@ class TextOrDie
         Raylib.DrawCircle3D(new Vector3(0, 20, 0), 10, new Vector3(0, 0, 0), 0, Color.RED);
         Raylib.DrawCircle3D(new Vector3(0, 0, 0), 10, new Vector3(0, 0, 0), 0, Color.GREEN);
         Raylib.DrawCircle3D(new Vector3(0, -20, 0), 10, new Vector3(0, 0, 0), 0, Color.BLUE);
+
+        Raylib.DrawCubeTexture(background, new Vector3(0, 15, 0), 10, 10, 10, Color.BLANK);
     }
 
     private void Logic()
