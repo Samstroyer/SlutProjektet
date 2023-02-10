@@ -140,6 +140,30 @@ class TextOrDie
 
         //storlek 9, offset 10 (-20 = -10 * 2)
         int startX = -20, size = 9;
+
+
+        // Försök på att göra så att alla "nya" block ritas in speciellt (kommer behövas en ny funktion för det)
+        // int currYLevel = 0;
+        // bool uppable = true;
+        // while (uppable)
+        // {
+        //     System.Threading.Thread.Sleep(150);
+        //     bool iteratable = false;
+        //     for (int participantID = 0; participantID < participants.Length; participantID++)
+        //     {
+        //         int height = participants[participantID].letterTower.Count;
+        //         if (height > currYLevel)
+        //         {
+        //             Raylib.DrawCube(new Vector3(participantID * 10 - 20, currYLevel * 2.5f, 0), size, 2, size, Color.BLUE);
+        //             Raylib.DrawCubeWires(new Vector3(participantID * 10 - 20, currYLevel * 2.5f, 0), size, 2, size, Color.BLACK);
+        //             iteratable = true;
+        //         }
+        //     }
+        //     currYLevel++;
+        //     Console.WriteLine("hye");
+        //     uppable = iteratable;
+        // }
+
         for (int participantID = 0; participantID < participants.Length; participantID++)
         {
             for (int towerHeight = 0; towerHeight <= participants[participantID].letterTower.Count; towerHeight++)
@@ -150,10 +174,10 @@ class TextOrDie
             startX += 10;
         }
 
-        //Reference
-        Raylib.DrawCircle3D(new Vector3(0, 20, 0), 10, new Vector3(0, 0, 0), 0, Color.RED);
-        Raylib.DrawCircle3D(new Vector3(0, 0, 0), 10, new Vector3(0, 0, 0), 0, Color.GREEN);
-        Raylib.DrawCircle3D(new Vector3(0, -20, 0), 10, new Vector3(0, 0, 0), 0, Color.BLUE);
+        // Reference points för debugging
+        // Raylib.DrawCircle3D(new Vector3(0, 20, 0), 10, new Vector3(0, 0, 0), 0, Color.RED);
+        // Raylib.DrawCircle3D(new Vector3(0, 0, 0), 10, new Vector3(0, 0, 0), 0, Color.GREEN);
+        // Raylib.DrawCircle3D(new Vector3(0, -20, 0), 10, new Vector3(0, 0, 0), 0, Color.BLUE);
 
         Raylib.DrawCubeTexture(background, new Vector3(0, 15, 0), 10, 10, 10, Color.BLANK);
     }
@@ -189,6 +213,7 @@ class TextOrDie
             {
                 participants[2].letterTower.AddRange(currentTyping);
                 participants[2].elevation = participants[2].letterTower.Count + 1;
+                currentTyping = "";
 
             }
 

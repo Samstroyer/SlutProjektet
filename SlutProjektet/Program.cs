@@ -61,7 +61,7 @@ void Game()
 
 
 
-        nextMenu = "Start TextOrDie";
+        // nextMenu = "Start TextOrDie";
 
 
 
